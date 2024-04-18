@@ -1,1 +1,0 @@
-# albanianquora_frontend
