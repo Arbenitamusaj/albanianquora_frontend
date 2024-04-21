@@ -1,25 +1,27 @@
-import React, { useState } from 'react';
+import NavBar from '../../components/NavBar';
+import React, { useState, useContext } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import axios from 'axios';  
+import axios from 'axios';
+import { AuthContext } from '../../../context/AuthContext'; 
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useContext(AuthContext);
   const router = useRouter();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-
       const response = await axios.post('http://localhost:5274/auth/login', {
         email,
         password
       });
 
       console.log('Login Successful:', response.data);
-      localStorage.setItem('token', response.data.token);
+      login(response.data.token); 
       router.push('/home');
     } catch (error) {
       console.error('Login failed:', error.response ? error.response.data : error.message);
@@ -70,5 +72,5 @@ export default function Login() {
         </div>
       </div>
     </div>
-  )
+  );
 }
