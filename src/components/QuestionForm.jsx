@@ -42,7 +42,13 @@ const handleSubmit = async (event) => {
   };
 
   try {
-    const response = await axios.post('http://localhost:5274/api/Question', questionData);
+    const authToken = localStorage.getItem('auth-token');
+    const response = await axios.post('http://localhost:5274/api/Question', questionData, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
+      }
+    });
+
     console.log('Response:', response);
     setTitle('');
     setDescription('');
@@ -52,6 +58,7 @@ const handleSubmit = async (event) => {
     console.error('Error submitting question:', error);
   }
 };
+
 
 
   return (
