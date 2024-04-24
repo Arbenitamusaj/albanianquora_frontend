@@ -14,7 +14,7 @@ const QuestionCard = ({ avatarUrl, name, category, timeAgo, title, content, comm
             <div className="text-lg font-bold text-slate-700">{name}</div>
           </div>
           <div className="flex items-center space-x-8">
-            <button className="rounded-2xl border bg-neutral-100 px-3 py-1 text-xs font-semibold">{category}</button>
+            <button className="rounded-2xl border bg-[#E8DFCA] px-3 py-1 text-xs font-semibold">{category}</button>
             <div className="text-xs text-neutral-500">{relativeTime}</div>
           </div>
         </div>

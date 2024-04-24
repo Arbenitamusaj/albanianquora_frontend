@@ -4,6 +4,9 @@ import NavBar from '../components/NavBar';
 import QuestionCard from '../components/QuestionCard';
 import QuestionForm from '../components/QuestionForm';
 import CategoryButton from '../components/CategoryButton';
+import FilterButton from '../components/FilterButton';
+import { VscListOrdered } from "react-icons/vsc";
+
 
 export default function Home() {
     const [showQuestion, setShowQuestion] = useState(false);
@@ -37,7 +40,7 @@ export default function Home() {
         fetchQuestions();
     }, []);
 
-        const handleCategorySelect = async (categoryId) => {
+    const handleCategorySelect = async (categoryId) => {
         try {
             const response = await axios.get(`http://localhost:5274/api/Question/ByCategory/${categoryId}`);
             setQuestions(response.data);
@@ -45,7 +48,14 @@ export default function Home() {
             console.error('Error fetching questions by category:', error);
         }
     };
-
+    const fetchLatestQuestions = async () => {
+        try {
+            const response = await axios.get('http://localhost:5274/api/Question/latest');
+            setQuestions(response.data);
+        } catch (error) {
+            console.error('Error fetching latest questions:', error);
+        }
+    };
 
 
     return (
@@ -56,13 +66,7 @@ export default function Home() {
                     <div className="w-full flex flex-row justify-center p-1">
                         <div className='w-1/5 hidden md:block'>
                             <div className="flex flex-wrap gap-2">
-                                {categories.map(category => (
-                                    <CategoryButton
-                                        key={category.id}
-                                        category={category}
-                                        onSelect={() => handleCategorySelect(category.id)}
-                                    />
-                                ))}
+                               <FilterButton filtername="Top Latest" onClick={fetchLatestQuestions} icon={VscListOrdered} />
                             </div>
                         </div>
                         <div className='w-3/5 flex justify-center flex-col'>
@@ -82,7 +86,15 @@ export default function Home() {
                             ))}
                         </div>
                         <div className='w-1/5 hidden md:block'>
-                            {/* Placeholder for additional sidebar or content */}
+                            <div className="flex flex-wrap gap-2">
+                                {categories.map(category => (
+                                    <CategoryButton
+                                        key={category.id}
+                                        category={category}
+                                        onSelect={() => handleCategorySelect(category.id)}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                     {showQuestion && (
