@@ -7,7 +7,8 @@ import CategoryButton from '../components/CategoryButton';
 
 export default function Home() {
     const [showQuestion, setShowQuestion] = useState(false);
-    const [categories, setCategories] = useState([]); 
+    const [categories, setCategories] = useState([]);
+    const [questions, setQuestions] = useState([]); 
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -22,13 +23,30 @@ export default function Home() {
                 console.error('Error fetching categories:', error);
             }
         };
+        const fetchQuestions = async () => {
+            try {
+                const response = await axios.get('http://localhost:5274/api/Question');
+                setQuestions(response.data);
+                console.log("Questions with TimeAgo from backend:", response.data.map(q => q.timeAgo));
+            } catch (error) {
+                console.error('Error fetching questions:', error);
+            }
+        };
 
         fetchCategories();
+        fetchQuestions();
     }, []);
 
-    const handleCategorySelect = categoryId => {
-        console.log(`Category selected: ${categoryId}`);
+        const handleCategorySelect = async (categoryId) => {
+        try {
+            const response = await axios.get(`http://localhost:5274/api/Question/ByCategory/${categoryId}`);
+            setQuestions(response.data);
+        } catch (error) {
+            console.error('Error fetching questions by category:', error);
+        }
     };
+
+
 
     return (
         <>
@@ -42,22 +60,26 @@ export default function Home() {
                                     <CategoryButton
                                         key={category.id}
                                         category={category}
-                                        onSelect={handleCategorySelect}
+                                        onSelect={() => handleCategorySelect(category.id)}
                                     />
                                 ))}
                             </div>
                         </div>
-                        <div className='w-3/5 flex justify-center'>
-                            <QuestionCard
-                                avatarUrl="https://i.pravatar.cc/150"
-                                name="Arbenita"
-                                category="Lifestyle"
-                                timeAgo="2 hours ago"
-                                title="How do lifestyle choices influence overall health?"
-                                content="Aliquam a tristique sapien, nec bibendum urna. Maecenas convallis dignissim turpis, non suscipit mauris interdum at."
-                                commentsCount="4"
-                                likesCount="125"
-                            />
+                        <div className='w-3/5 flex justify-center flex-col'>
+                            {questions.map(question => (
+                                <QuestionCard
+                                    key={question.questionId}
+                                    // avatarUrl={question.avatarUrl}
+                                    name={question.userName}
+                                    category={question.category}
+                                    timeAgo={question.timeAgo}
+                                    title={question.title}
+                                    content={question.content}
+                                    // Pass the commentsCount and likesCount when they are available
+                                    // commentsCount={question.commentsCount}
+                                    // likesCount={question.likesCount}
+                                />
+                            ))}
                         </div>
                         <div className='w-1/5 hidden md:block'>
                             {/* Placeholder for additional sidebar or content */}
