@@ -7,6 +7,7 @@ import { MdLogin } from 'react-icons/md';
 import { FaRegUser } from 'react-icons/fa';
 import SearchBar from '../components/SearchBar';
 import AskButton from '../components/AskButton'; 
+import AddCategory from './AddCategory';
 
 export default function NavBar({ toggleQuestionForm }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -43,6 +44,7 @@ export default function NavBar({ toggleQuestionForm }) {
                         <Link href="/auth/register" className="flex items-center mx-4 hover:text-[#0d9488] hover:border-b hover:border-[#0d9488]">
                             <FaRegUser className="mr-2" />Register
                         </Link>
+                        <AddCategory/>
                     </div>
                 </div>
 
@@ -58,6 +60,7 @@ export default function NavBar({ toggleQuestionForm }) {
                         <Link href="/auth/register" className="flex items-center justify-center py-2 w-full px-6 text-center hover:text-[#0d9488] hover:border-b hover:border-[#0d9488]">
                             <FaRegUser className="mr-1" />Register
                         </Link>
+                        
                     </div>
                 )}
 
