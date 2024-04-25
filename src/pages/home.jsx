@@ -72,7 +72,7 @@ export default function Home() {
                         <div className='w-3/5 flex justify-center flex-col'>
                             {questions.map(question => (
                                 <QuestionCard
-                                    key={question.questionId}
+                                    questionId={question.questionId}
                                     // avatarUrl={question.avatarUrl}
                                     name={question.userName}
                                     category={question.category}
