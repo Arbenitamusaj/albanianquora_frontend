@@ -7,8 +7,8 @@ const Comment = ({ username, createdAt, text }) => {
   const strippedText = removePTags(text);
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md">
-      <h3 className="text-lg font-bold">{username}</h3>
+    <div className="bg-white p-4 rounded-lg shadow-md mb-2">
+      <h3 className="text-lg font-bold ">{username}</h3>
       <p className="text-gray-700 text-sm mb-2">Posted {formattedDate}</p>
       <p className="text-gray-700">{strippedText}</p>
     </div>

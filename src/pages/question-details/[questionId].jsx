@@ -5,6 +5,7 @@ import QuestionCard from '../../components/QuestionCard';
 import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
 import { Button } from '@mui/material';
+import Comment from '../../components/Comment'
 
 
 const ReactQuill = dynamic(() => import('react-quill'), {
@@ -17,21 +18,34 @@ export default function QuestionDetails() {
     const [questionDetails, setQuestionDetails] = useState(null);
     const [loading, setLoading] = useState(true);
     const [comment, setComment] = useState('');
+    const [comments, setComments] = useState([]);
     const [feedbackMessage, setFeedbackMessage] = useState('');
 
     useEffect(() => {
-        if (questionId) { // Only proceed if questionId is not undefined
+        if (questionId) {
+            setLoading(true);
             const fetchQuestionDetails = async () => {
                 try {
                     const response = await axios.get(`http://localhost:5274/api/Question/${questionId}`);
                     setQuestionDetails(response.data);
                 } catch (error) {
                     console.error('Error fetching question details:', error);
-                } finally {
-                    setLoading(false); // Set loading to false regardless of the outcome
                 }
             };
+
+            const fetchComments = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5274/Comment/byQuestion/${questionId}`);
+                setComments(response.data);
+            } catch (error) {
+                console.error('Error fetching comments:', error);
+            }
+            };
+
+
             fetchQuestionDetails();
+            fetchComments();
+            setLoading(false);
         }
     }, [questionId]);
        
@@ -81,13 +95,22 @@ export default function QuestionDetails() {
                 timeAgo={questionDetails.timeAgo}
                 title={questionDetails.title}
                 content={questionDetails.content}
-                // commentsCount={0} // Assuming not provided, set accordingly if available
+                commentsCount={comments.length} 
+                likesCount={comments.length}// Assuming not provided, set accordingly if available
                 // likesCount={0} // Assuming not provided, set accordingly if available
             />
             </div>
             <div className='w-full  flex flex-col items-center '>
                 <div className='w-1/2 flex flex-row justify-start items-center p-2'>
-                    <span className='text-lg font-semibold'>Add your comment:</span>
+                    <span className='text-base font-semibold'>Comment Section:</span>
+                </div>
+                <div className='w-1/2 rounded-xl p-2 '>
+            {comments.map(comment => (
+                <Comment username={comment.userName} createdAt={comment.timeAgo} text={comment.content} />
+            ))}
+                </div>
+                <div className='w-1/2 flex flex-row justify-start items-center p-2'>
+                    <span className='text-base font-semibold'>Add your comment:</span>
                 </div>
                 <div className='w-1/2 rounded-xl p-2 '>
                     <ReactQuill 
@@ -99,6 +122,7 @@ export default function QuestionDetails() {
                         style={{ height: '200px' }}
                     />
                 </div>
+
             {feedbackMessage && <div className="w-1/2 text-center">{feedbackMessage}</div>}
                 <div className='w-1/2 flex flex-row justify-end items-center mt-10 p-2 '>
                     <Button variant="contained" color="primary" onClick={handlePostComment}>
