@@ -34,7 +34,6 @@ export default function Home() {
                 console.error('Error fetching questions:', error);
             }
         };
-
         fetchCategories();
         fetchQuestions();
     }, []);
@@ -55,17 +54,36 @@ export default function Home() {
             console.error('Error fetching latest questions:', error);
         }
     };
+    const fetchMostLikedQuestions = async () => {
+        try {
+            const response = await axios.get('http://localhost:5274/api/Like/mostLiked');
+            setQuestions(response.data);
+        } catch (error) {
+            console.error('Error fetching most liked questions:', error);
+        }
+    };
+    const fetchMostCommentedQuestions = async () => {
+        try {
+            const response = await axios.get('http://localhost:5274/api/Question/mostCommented');
+            setQuestions(response.data);
+        } catch (error) {
+            console.error('Error fetching most liked questions:', error);
+        }
+    };
 
 
     return (
         <>
-            <div className='bg-gray-100 h-screen relative'>
+            <div className='bg-gray-100 h-full relative'>
                 <NavBar toggleQuestionForm={() => setShowQuestion(!showQuestion)} />
                 <div className="pt-10 px-3 md:px-10 lg:px-20">
                     <div className="w-full flex flex-row justify-center p-1">
                         <div className='w-1/5 hidden md:block'>
                             <div className="flex flex-wrap gap-2">
                                <FilterButton filtername="Top Latest" onClick={fetchLatestQuestions} icon={VscListOrdered} />
+                                <FilterButton filtername="Most Liked" onClick={fetchMostLikedQuestions} icon={VscListOrdered} />
+                                <FilterButton filtername="Most Commented" onClick={fetchMostCommentedQuestions} icon={VscListOrdered} />
+
                             </div>
                         </div>
                         <div className='w-3/5 flex justify-center flex-col'>
