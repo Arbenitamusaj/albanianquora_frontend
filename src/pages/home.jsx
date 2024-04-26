@@ -7,7 +7,6 @@ import CategoryButton from '../components/CategoryButton';
 import FilterButton from '../components/FilterButton';
 import { VscListOrdered } from "react-icons/vsc";
 
-
 export default function Home() {
     const [showQuestion, setShowQuestion] = useState(false);
     const [categories, setCategories] = useState([]);
@@ -71,18 +70,16 @@ export default function Home() {
                         </div>
                         <div className='w-3/5 flex justify-center flex-col'>
                             {questions.map(question => (
+
                                 <QuestionCard
                                     questionId={question.questionId}
-                                    // avatarUrl={question.avatarUrl}
                                     name={question.userName}
                                     category={question.category}
                                     timeAgo={question.timeAgo}
                                     title={question.title}
                                     content={question.content}
-                                    // Pass the commentsCount and likesCount when they are available
-                                    // commentsCount={question.commentsCount}
-                                    // likesCount={question.likesCount}
                                 />
+                         
                             ))}
                         </div>
                         <div className='w-1/5 hidden md:block'>

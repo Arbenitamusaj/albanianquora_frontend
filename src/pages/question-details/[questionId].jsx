@@ -66,20 +66,12 @@ export default function QuestionDetails() {
             });
 
             setFeedbackMessage('Comment posted successfully.');
-            setComment(''); // Clear the comment input field
+            setComment('');
         } catch (error) {
             console.error('Error posting comment:', error);
             setFeedbackMessage('Failed to post comment.');
         }
     }; 
-
-    if (loading) {
-        return <p>Loading...</p>;
-    }
-
-    if (!questionDetails) {
-        return <p>No question found.</p>; // Handle the case where questionDetails is null
-    }
 
     return (
         <div className='w-full  flex  justify-center flex-col items-center  bg-gray-100'>
@@ -89,15 +81,14 @@ export default function QuestionDetails() {
             <div className=' w-2/3'>
             <QuestionCard
                 questionId={questionDetails.questionId}
-                avatarUrl={''} // Assuming avatar URL is not provided in the current API response
+                avatarUrl={''}
                 name={questionDetails.userName}
                 category={questionDetails.category}
                 timeAgo={questionDetails.timeAgo}
                 title={questionDetails.title}
                 content={questionDetails.content}
                 commentsCount={comments.length} 
-                likesCount={comments.length}// Assuming not provided, set accordingly if available
-                // likesCount={0} // Assuming not provided, set accordingly if available
+                likesCount={comments.length}
             />
             </div>
             <div className='w-full  flex flex-col items-center '>
