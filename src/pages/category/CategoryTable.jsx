@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AddCategory from '@/components/AddCategorymyalias';
 import EditCategory from '@/components/EditCategorymyalias';
+import DeleteConfirmation from '@/components/DeleteConfirmationmyalias';
 
 function CategoryTable() {
     const [categories, setCategories] = useState([]);
     const [editingCategory, setEditingCategory] = useState(null);
     const [showEditForm, setShowEditForm] = useState(false);
+    const [deleteCategory, setDeleteCategory] = useState(null);
+    const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -38,6 +41,28 @@ function CategoryTable() {
             cat.id === updatedCategory.id ? updatedCategory : cat
         );
         setCategories(updatedCategories);
+    };
+
+
+    const handleDelete = (category) => {
+        setDeleteCategory(category);
+        setIsConfirmationOpen(true);
+    };
+
+    const handleCancelDelete = () => {
+        setDeleteCategory(null);
+        setIsConfirmationOpen(false);
+    };
+
+    const handleConfirmDelete = async () => {
+        try {
+            await axios.delete(`http://localhost:5274/api/QuestionCategory/${deleteCategory.id}`);
+            setCategories(categories.filter((cat) => cat.id !== deleteCategory.id));
+        } catch (error) {
+            console.error('Error deleting category:', error);
+        } finally {
+            setIsConfirmationOpen(false);
+        }
     };
 
 
@@ -80,7 +105,7 @@ function CategoryTable() {
                                 <button onClick={() => handleEditClick(category)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                     Edit
                                 </button>
-                                <button className="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4">
+                                <button onClick={() => handleDelete(category)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4">
                                     Delete
                                 </button>               
                              </td>
@@ -88,6 +113,11 @@ function CategoryTable() {
                     ))}
                 </tbody>
             </table>
+            <DeleteConfirmation
+                isOpen={isConfirmationOpen}
+                onCancel={handleCancelDelete}
+                onConfirm={handleConfirmDelete}
+            />
         </div>
     );
 }
