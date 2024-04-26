@@ -20,7 +20,8 @@ const AddCategoryForm =({handleCloseForm}) =>{
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-50">
+    <div dir="ltr">
+      <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-50">
       <div className="bg-white rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-4">Add New Category</h2>
         <form onSubmit={handleSubmit}>
@@ -43,6 +44,8 @@ const AddCategoryForm =({handleCloseForm}) =>{
         </form>
       </div>
     </div>
+    </div>
+    
   );
 }
 export default AddCategoryForm;
