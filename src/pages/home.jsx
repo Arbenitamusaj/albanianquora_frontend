@@ -6,6 +6,7 @@ import QuestionForm from '../components/QuestionForm';
 import CategoryButton from '../components/CategoryButton';
 import FilterButton from '../components/FilterButton';
 import { VscListOrdered } from "react-icons/vsc";
+import Link from 'next/link';
 
 export default function Home() {
     const [showQuestion, setShowQuestion] = useState(false);
@@ -92,6 +93,9 @@ export default function Home() {
                     <div className="w-full flex flex-row justify-center p-1">
                         <div className='w-1/5 hidden md:block'>
                             <div className="flex flex-wrap gap-2">
+                            <Link href="/category/CategoryTable">
+                                Category Table
+                            </Link>
                                <FilterButton filtername="Top Latest" onClick={fetchLatestQuestions} icon={VscListOrdered} />
                                 <FilterButton filtername="Most Liked" onClick={fetchMostLikedQuestions} icon={VscListOrdered} />
                                 <FilterButton filtername="Most Commented" onClick={fetchMostCommentedQuestions} icon={VscListOrdered} />
