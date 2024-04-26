@@ -13,38 +13,41 @@ export default function Home() {
     const [questions, setQuestions] = useState([]); 
 
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await axios.get('http://localhost:5274/api/QuestionCategory');
-                const categoriesData = response.data.map(category => ({
-                    id: category.id,
-                    name: category.category
-                }));
-                setCategories(categoriesData);
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-            }
-        };
-        const fetchQuestions = async () => {
-            try {
-                const response = await axios.get('http://localhost:5274/api/Question');
-                setQuestions(response.data);
-                console.log("Questions with TimeAgo from backend:", response.data.map(q => q.timeAgo));
-            } catch (error) {
-                console.error('Error fetching questions:', error);
-            }
-        };
-        
         fetchCategories();
         fetchQuestions();
     }, []);
 
-    const handleCategorySelect = async (categoryId) => {
+    const fetchCategories = async () => {
         try {
-            const response = await axios.get(`http://localhost:5274/api/Question/ByCategory/${categoryId}`);
+            const response = await axios.get('http://localhost:5274/api/QuestionCategory');
+            setCategories(response.data.map(category => ({
+                id: category.id,
+                name: category.category
+            })));
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    };
+
+    const fetchQuestions = async () => {
+        try {
+            const response = await axios.get('http://localhost:5274/api/Question');
             setQuestions(response.data);
         } catch (error) {
-            console.error('Error fetching questions by category:', error);
+            console.error('Error fetching questions:', error);
+        }
+    };
+
+    const handleSearch = async (searchTerm) => {
+        if (!searchTerm) {
+            fetchQuestions();  // Reload all questions if search is cleared or invalid
+            return;
+        }
+        try {
+            const response = await axios.get(`http://localhost:5274/api/question/search?search=${searchTerm}`);
+            setQuestions(response.data);
+        } catch (error) {
+            console.error('Error performing search:', error);
         }
     };
     const fetchLatestQuestions = async () => {
@@ -83,8 +86,8 @@ export default function Home() {
 
     return (
         <>
-            <div className='bg-gray-100 h-full relative'>
-                <NavBar toggleQuestionForm={() => setShowQuestion(!showQuestion)} />
+            <div className='bg-gray-100 h-full min-h-screen relative'>
+                <NavBar toggleQuestionForm={() => setShowQuestion(!showQuestion)} onSearch={handleSearch} />
                 <div className="pt-10 px-3 md:px-10 lg:px-20">
                     <div className="w-full flex flex-row justify-center p-1">
                         <div className='w-1/5 hidden md:block'>
