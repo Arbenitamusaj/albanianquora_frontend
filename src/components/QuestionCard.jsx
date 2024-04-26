@@ -5,6 +5,7 @@ import { BiLike } from "react-icons/bi";
 import { removePTags } from '../utils/removePTags';
 import { timeAgo as getTimeAgo } from '../utils/timeAgo';
 import { useRouter } from 'next/router';
+import { FaArrowRight } from "react-icons/fa6";
 
 
 const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, content, commentsCount, likesCount }) => {
@@ -106,9 +107,13 @@ const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, c
 
             </div>
           </div>) : (
-          <div className="flex justify-end">
+          <div className="flex justify-end w-full ">
             <Link href={`/question-details/${questionId}`}>
-                Question Details →          
+              <div className='flex justify center items-center text-sm'>
+                Question Details 
+                <div className='ml-2'><FaArrowRight/></div>
+              </div>
+                     
             </Link>
           </div>
         )}
