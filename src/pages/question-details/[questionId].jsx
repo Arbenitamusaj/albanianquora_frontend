@@ -6,6 +6,8 @@ import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
 import { Button } from '@mui/material';
 import Comment from '../../components/Comment'
+import { FaArrowRight } from "react-icons/fa6";
+
 
 
 const ReactQuill = dynamic(() => import('react-quill'), {
@@ -28,6 +30,7 @@ export default function QuestionDetails() {
                 try {
                     const response = await axios.get(`http://localhost:5274/api/Question/${questionId}`);
                     setQuestionDetails(response.data);
+                    console.log(questionDetails);
                 } catch (error) {
                     console.error('Error fetching question details:', error);
                 }
@@ -78,9 +81,10 @@ export default function QuestionDetails() {
             <div className='text-3xl italic my-10'>
                 Question Details
             </div>
+        {questionDetails ? (
             <div className=' w-2/3'>
             <QuestionCard
-                questionId={questionDetails.questionId}
+                questionId={questionId}
                 avatarUrl={''}
                 name={questionDetails.userName}
                 category={questionDetails.category}
@@ -91,6 +95,9 @@ export default function QuestionDetails() {
                 likesCount={comments.length}
             />
             </div>
+        ) : (
+            <p>Loading question details...</p> 
+        )}
             <div className='w-full  flex flex-col items-center '>
                 <div className='w-1/2 flex flex-row justify-start items-center p-2'>
                     <span className='text-base font-semibold'>Comment Section:</span>
