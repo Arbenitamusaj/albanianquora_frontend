@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 import { Button } from '@mui/material';
 import Comment from '../../components/Comment'
 import { FaArrowRight } from "react-icons/fa6";
-
+import { jwtDecode } from 'jwt-decode';
 
 
 const ReactQuill = dynamic(() => import('react-quill'), {
@@ -22,8 +22,15 @@ export default function QuestionDetails() {
     const [comment, setComment] = useState('');
     const [comments, setComments] = useState([]);
     const [feedbackMessage, setFeedbackMessage] = useState('');
+    const [userId, setUserId] = useState('');
 
     useEffect(() => {
+        const token = localStorage.getItem('auth-token');
+        if (token) {
+            const decoded = jwtDecode(token);
+            setUserId(decoded.nameid); 
+        }
+        
         if (questionId) {
             setLoading(true);
             const fetchQuestionDetails = async () => {
@@ -39,6 +46,7 @@ export default function QuestionDetails() {
             const fetchComments = async () => {
             try {
                 const response = await axios.get(`http://localhost:5274/Comment/byQuestion/${questionId}`);
+                console.log("Comments fetched:", response.data);
                 setComments(response.data);
             } catch (error) {
                 console.error('Error fetching comments:', error);
@@ -59,7 +67,7 @@ export default function QuestionDetails() {
             fetchComments();
             setLoading(false);
         }
-    }, [questionId]);
+    }, [userId,questionId]);
        
     const handlePostComment = async () => {
         if (!comment.trim()) {
@@ -84,6 +92,56 @@ export default function QuestionDetails() {
             setFeedbackMessage('Failed to post comment.');
         }
     }; 
+    const handleDeleteComment = async (commentId) => {
+    try {
+        const authToken = localStorage.getItem('auth-token');
+        const response = await axios.delete(`http://localhost:5274/Comment/comments/${commentId}`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+
+        if (response.status === 200) {
+            setComments(comments.filter(comment => comment.id !== commentId));
+            setFeedbackMessage('Comment deleted successfully.');
+        } else {
+            throw new Error('Failed to delete comment');
+        }
+    } catch (error) {
+        console.error('Error deleting comment:', error);
+        setFeedbackMessage('Failed to delete comment.');
+    }
+};
+
+const handleEditComment = async (commentId, newContent) => {
+    console.log("Editing comment ID:", commentId);
+    try {
+        const authToken = localStorage.getItem('auth-token');
+        const response = await axios.put(`http://localhost:5274/Comment/comments/${commentId}`, {
+            content: newContent
+        }, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+
+        if (response.status === 200) {
+            const updatedComments = comments.map(comment => {
+                if (comment.id === commentId) {
+                    return { ...comment, content: newContent };
+                }
+                return comment;
+            });
+            setComments(updatedComments);
+            setFeedbackMessage('Comment updated successfully.');
+        } else {
+            throw new Error('Failed to update comment');
+        }
+    } catch (error) {
+        console.error('Error updating comment:', error);
+        setFeedbackMessage('Failed to update comment.');
+    }
+};
 
     return (
         <div className='w-full  flex  justify-center flex-col items-center  bg-gray-100'>
@@ -112,9 +170,18 @@ export default function QuestionDetails() {
                     <span className='text-base font-semibold'>Comment Section:</span>
                 </div>
                 <div className='w-1/2 rounded-xl p-2 '>
-            {comments.map(comment => (
-                <Comment username={comment.userName} createdAt={comment.timeAgo} text={comment.content} />
-            ))}
+                    {comments.map(comment => (
+                        <Comment
+                            key={comment.id}
+                            commentId={comment.commentId}
+                            username={comment.userName}
+                            createdAt={comment.timeAgo}
+                            text={comment.content}
+                            isUserComment={comment.userId === userId}
+                            onUpdate={(newContent) => handleEditComment(comment.id, newContent)}
+                            onDelete={() => handleDeleteComment(comment.id)}
+                        />
+                    ))}
                 </div>
                 <div className='w-1/2 flex flex-row justify-start items-center p-2'>
                     <span className='text-base font-semibold'>Add your comment:</span>
