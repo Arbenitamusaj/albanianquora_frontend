@@ -44,7 +44,16 @@ export default function QuestionDetails() {
                 console.error('Error fetching comments:', error);
             }
             };
-
+            const incrementViews = async () => {
+                try {
+                    await axios.post(`http://localhost:5274/api/Question/incrementView/${questionId}`);
+                } catch (error) {
+                    console.error('Error incrementing views:', error);
+                }
+            };
+            if (questionId) {
+                incrementViews();  
+            }
 
             fetchQuestionDetails();
             fetchComments();

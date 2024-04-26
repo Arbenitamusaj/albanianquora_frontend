@@ -34,6 +34,7 @@ export default function Home() {
                 console.error('Error fetching questions:', error);
             }
         };
+        
         fetchCategories();
         fetchQuestions();
     }, []);
@@ -70,6 +71,14 @@ export default function Home() {
             console.error('Error fetching most liked questions:', error);
         }
     };
+    const fetchMostViewedQuestions = async () => {
+        try {
+            const response = await axios.get('http://localhost:5274/api/Question/mostViewed');
+            setQuestions(response.data);
+        } catch (error) {
+            console.error('Error fetching most liked questions:', error);
+        }
+    };
 
 
     return (
@@ -83,6 +92,8 @@ export default function Home() {
                                <FilterButton filtername="Top Latest" onClick={fetchLatestQuestions} icon={VscListOrdered} />
                                 <FilterButton filtername="Most Liked" onClick={fetchMostLikedQuestions} icon={VscListOrdered} />
                                 <FilterButton filtername="Most Commented" onClick={fetchMostCommentedQuestions} icon={VscListOrdered} />
+                                <FilterButton filtername="Most Viewed" onClick={fetchMostViewedQuestions} icon={VscListOrdered} />
+
 
                             </div>
                         </div>
