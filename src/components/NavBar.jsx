@@ -8,7 +8,8 @@ import { FaRegUser } from 'react-icons/fa';
 import SearchBar from '../components/SearchBar';
 import AskButton from '../components/AskButton'; 
 
-export default function NavBar({ toggleQuestionForm }) {
+
+export default function NavBar({ toggleQuestionForm, onSearch }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
@@ -31,7 +32,7 @@ export default function NavBar({ toggleQuestionForm }) {
                 </div>
                 <div className='hidden lg:flex justify-between items-center w-full'>
                     <div className='text-lg font-bold text-[#0d9488]'>AlbanianQuora</div>
-                    <SearchBar placeholder="Search..." onSearch={console.log} />
+                    <SearchBar placeholder="Search..."  onSearch={onSearch} />
                     <div className='flex items-center'>
                         <Link href="/home" className="flex items-center mx-4 hover:text-[#0d9488] hover:border-b hover:border-[#0d9488]">
                             <AiOutlineHome className="mr-2" />Home
@@ -43,6 +44,7 @@ export default function NavBar({ toggleQuestionForm }) {
                         <Link href="/auth/register" className="flex items-center mx-4 hover:text-[#0d9488] hover:border-b hover:border-[#0d9488]">
                             <FaRegUser className="mr-2" />Register
                         </Link>
+                       
                     </div>
                 </div>
 
@@ -58,6 +60,7 @@ export default function NavBar({ toggleQuestionForm }) {
                         <Link href="/auth/register" className="flex items-center justify-center py-2 w-full px-6 text-center hover:text-[#0d9488] hover:border-b hover:border-[#0d9488]">
                             <FaRegUser className="mr-1" />Register
                         </Link>
+                        
                     </div>
                 )}
 
