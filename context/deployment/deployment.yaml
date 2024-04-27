@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quora-frontend-deployment
+  labels:
+    app: albanian-quora-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: albanian-quora-frontend
+  template:
+    metadata:
+      labels:
+        app: albanian-quora-frontend
+    spec:
+  containers:
+    - name: albanian-quora-frontend
+      image: shqiperimramadani/albanianquora_frontend:latest
+      ports:
+        - containerPort: 80
+      env:
+        - name: REACT_APP_API
+          value: http://20.76.156.142
+      resources:
+        limits:
+          cpu: "1" # Limit CPU usage to 1 core
+          memory: "2Gi" # Limit memory usage to 2 Gigabytes
+
