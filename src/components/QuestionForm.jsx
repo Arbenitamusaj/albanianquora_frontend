@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import axios from 'axios';
 import 'react-quill/dist/quill.snow.css';
 import { Select, MenuItem, FormControl, InputLabel, TextField, Button } from '@mui/material';
+import { showToast } from '../components/Notify';
 
 const ReactQuill = dynamic(() => import('react-quill'), {
   ssr: false,
@@ -53,9 +54,11 @@ const handleSubmit = async (event) => {
     setTitle('');
     setDescription('');
     setCategory('');
+    showToast('Question posted successfully!', 'success');
     toggleForm(); 
   } catch (error) {
     console.error('Error submitting question:', error);
+    showToast('Failed to post question. Please try again.', 'error');
   }
 };
 

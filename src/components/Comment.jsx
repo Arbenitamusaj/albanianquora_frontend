@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { timeAgo } from '../utils/timeAgo';
-import { removePTags } from '../utils/removePTags';
 import { IconButton, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
+import { timeAgo } from '../utils/timeAgo';
+import { removePTags } from '../utils/removePTags';
 
 const ReactQuill = dynamic(() => import('react-quill'), {
   ssr: false,
@@ -16,19 +16,19 @@ const Comment = ({ username, createdAt, text, isUserComment, onUpdate, onDelete 
   const [editMode, setEditMode] = useState(false);
   const [editedText, setEditedText] = useState(text);
   const formattedDate = timeAgo(createdAt);
-  const strippedText = removePTags(text);
+  const strippedText = removePTags(text || '');  // Pass an empty string if text is undefined
 
   const handleEdit = () => {
     setEditMode(true);
   };
 
   const handleSave = () => {
-    onUpdate(editedText);  
+    onUpdate(editedText);
     setEditMode(false);
   };
 
   const handleCancel = () => {
-    setEditedText(text);  
+    setEditedText(text); // Reset to original text if cancel
     setEditMode(false);
   };
 
@@ -54,7 +54,7 @@ const Comment = ({ username, createdAt, text, isUserComment, onUpdate, onDelete 
           </div>
         </div>
       ) : (
-        <p className="text-gray-700">{strippedText}</p>
+        <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: strippedText }}></div>
       )}
       {isUserComment && !editMode && (
         <div className="absolute top-2 right-2 flex">
