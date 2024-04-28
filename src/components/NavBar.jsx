@@ -7,15 +7,23 @@ import { MdLogin } from 'react-icons/md';
 import { FaRegUser } from 'react-icons/fa';
 import SearchBar from '../components/SearchBar';
 import AskButton from '../components/AskButton'; 
+import { useAuth } from '../../context/AuthContext';
 
 
 export default function NavBar({ toggleQuestionForm, onSearch }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const { logout } = useContext(AuthContext);
+    const authToken = typeof window !== 'undefined' ? localStorage.getItem('auth-token') : null;
+    const { logout } = useAuth();
+    // const authToken = null;
 
-    useEffect(() => {
+    function toggleDropdown() {
+        var dropdownContent = document.getElementById("dropdown-content");
+        dropdownContent.classList.toggle("hidden");
+    }
+
+    useEffect(() => {   
         const handleScroll = () => {
             setScrolled(window.scrollY > 20);
         };
@@ -41,16 +49,16 @@ export default function NavBar({ toggleQuestionForm, onSearch }) {
                         <AskButton toggleQuestionForm={toggleQuestionForm} setIsOpen={setIsOpen} />    
 
                         {authToken ? (
-                            // Render authenticated links when authToken exists
                             <>
                                 <div className="flex justify-between h-16">
-                                    <div className="p-3 rounded-lg flex">
+                                    <div className="p-5 rounded-lg flex">
                                     <div>
                                         <div className="relative inline-block text-left z-50">
                                         <div>
                                             <button
                                             type="button"
                                             className="flex items-center text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition"
+                                            onClick={() => toggleDropdown()}
                                             >
                                             <FaRegUser />
                                             <h1 className="md:block hidden mx-2 font-bold">{}</h1>
@@ -69,7 +77,8 @@ export default function NavBar({ toggleQuestionForm, onSearch }) {
                                             </button>
                                         </div>
                                         <div
-                                            className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+                                            id='dropdown-content'
+                                            className="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
                                         >
                                             <div className="py-1">
                                             <a href="" className="block px-4 py-2 text-xs text-gray-400">
@@ -91,7 +100,7 @@ export default function NavBar({ toggleQuestionForm, onSearch }) {
 
                                             <a
                                                 href="/home"
-                                                onClick={logout()}
+                                                onClick={() => logout()}
                                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                             >
                                                 Log Out
