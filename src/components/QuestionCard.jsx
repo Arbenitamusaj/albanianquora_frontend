@@ -5,21 +5,36 @@ import { BiLike } from "react-icons/bi";
 import { removePTags } from '../utils/removePTags';
 import { timeAgo as getTimeAgo } from '../utils/timeAgo';
 import { useRouter } from 'next/router';
-import { FaArrowRight } from "react-icons/fa6";
 
 
-const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, content, commentsCount, likesCount }) => {
+const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, content, likesCount }) => {
   const strippedContent = removePTags(content);
   const relativeTime = getTimeAgo(timeAgo);
-  const [likes, setLikes] = useState(likesCount); // Initialize likes with the initial prop
+  const [likes, setLikes] = useState(likesCount); 
   const [liked, setLiked] = useState(false);
   const router = useRouter();
-  const isQuestionDetailPage = router.pathname === '/question-details/[questionId]';
+  const [commentsCount, setCommentsCount] = useState(0);
+
+
+    useEffect(() => {
+    const fetchCommentsCount = async () => {
+      try {
+        
+        const response = await axios.get(`http://localhost:5274/Comment/${questionId}/commentcount`);
+        setCommentsCount(response.data.commentCount);
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error fetching comment count:', error);
+      }
+    };
+
+    fetchCommentsCount();
+  }, [questionId]);
   useEffect(() => {
     const fetchLikesCount = async () => {
       try {
         const response = await axios.get(`http://localhost:5274/api/Like/count/${questionId}`);
-        setLikes(response.data); // Update state with the fetched likes count
+        setLikes(response.data); 
         console.log('Likes count:', response.data);
       } catch (error) {
         console.error('Error fetching likes count:', error);
@@ -27,7 +42,7 @@ const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, c
     };
 
     fetchLikesCount();
-  }, [questionId]); // Re-run this effect if questionId changes
+  }, [questionId]); 
   useEffect(() => {
     const checkIfLiked = async () => {
         try {
@@ -36,19 +51,19 @@ const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, c
                     'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
                 }
             });
-            setLiked(response.data); // Set the initial liked state based on the response
+            setLiked(response.data); 
         } catch (error) {
             console.error('Error checking like status:', error);
         }
     };
 
     checkIfLiked();
-}, [questionId]); // Re-run this effect if questionId changes
+}, [questionId]); 
 
   const handleLike = async (event) => {
-    event.stopPropagation(); // Stop the link navigation
+    event.stopPropagation();
     const authToken = localStorage.getItem('auth-token');
-    const updateCount = liked ? -1 : 1; // Determine if we are incrementing or decrementing
+    const updateCount = liked ? -1 : 1; 
 
     try {
       if (!liked) {
@@ -64,8 +79,8 @@ const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, c
           }
         });
       }
-      setLikes(prev => prev + updateCount); // Update likes locally
-      setLiked(!liked); // Toggle liked state
+      setLikes(prev => prev + updateCount); 
+      setLiked(!liked); 
     } catch (error) {
       console.error('Error updating like:', error);
     }
@@ -84,42 +99,38 @@ const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, c
               <div className="text-xs text-neutral-500">{relativeTime}</div>
             </div>
           </div>
-
           <div className="mt-4 mb-6">
             <div className="mb-3 text-xl font-bold">{title}</div>
             <div className="text-sm text-neutral-600" dangerouslySetInnerHTML={{ __html: strippedContent }}></div>
           </div>
-          {isQuestionDetailPage ? (
           <div className="flex items-center justify-between text-slate-500">
             <div className="flex space-x-4 md:space-x-8">
-           
-               <div className="flex cursor-pointer items-center transition hover:text-slate-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="mr-1.5 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                </svg>
-                <span>{commentsCount}</span>
-              </div> 
-              
+              {router.pathname === '/home' ?(
+                 <Link href={`/question-details/${questionId}`}>
+                <div className="flex cursor-pointer items-center transition hover:text-slate-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="mr-1.5 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                  </svg>
+                  <span>{commentsCount}</span>
+                </div>
+              </Link>
+              ):(
+                <div className="flex cursor-pointer items-center transition hover:text-slate-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="mr-1.5 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                  </svg>
+                  <span>{commentsCount}</span>
+                </div>
+              )}
+             
               <div className="flex cursor-pointer items-center transition hover:text-slate-600">
                 <BiLike onClick={handleLike} className={`cursor-pointer ${liked ? 'text-red-500' : 'text-gray-500'}`} style={{ fontSize: '1.5rem' }} />
                 <span>{likes} {liked ? "Unlike" : "Like"}</span>
               </div>
-
             </div>
-          </div>) : (
-          <div className="flex justify-end w-full ">
-            <Link href={`/question-details/${questionId}`}>
-              <div className='flex justify center items-center text-sm'>
-                Question Details 
-                <div className='ml-2'><FaArrowRight/></div>
-              </div>
-                     
-            </Link>
           </div>
-        )}
         </div>
       </div>
-
   );
 };
 
