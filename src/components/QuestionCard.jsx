@@ -7,8 +7,8 @@ import { timeAgo as getTimeAgo } from '../utils/timeAgo';
 import { useRouter } from 'next/router';
 
 
-const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, content, likesCount }) => {
-  const strippedContent = removePTags(content);
+const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, description, likesCount }) => {
+  const strippedContent = removePTags(description);
   const relativeTime = getTimeAgo(timeAgo);
   const [likes, setLikes] = useState(likesCount); 
   const [liked, setLiked] = useState(false);
@@ -20,7 +20,7 @@ const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, c
     const fetchCommentsCount = async () => {
       try {
         
-        const response = await axios.get(`http://localhost:5274/Comment/${questionId}/commentcount`);
+        const response = await axios.get(`http://localhost:5274/api/question/${questionId}/commentcount`);
         setCommentsCount(response.data.commentCount);
         console.log(response.data)
       } catch (error) {
@@ -33,7 +33,7 @@ const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, c
   useEffect(() => {
     const fetchLikesCount = async () => {
       try {
-        const response = await axios.get(`http://localhost:5274/api/Like/count/${questionId}`);
+        const response = await axios.get(`http://localhost:5274/api/likes/${questionId}`);
         setLikes(response.data); 
         console.log('Likes count:', response.data);
       } catch (error) {
@@ -46,7 +46,7 @@ const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, c
   useEffect(() => {
     const checkIfLiked = async () => {
         try {
-            const response = await axios.get(`http://localhost:5274/api/Like/hasLiked/${questionId}`, {
+            const response = await axios.get(`http://localhost:5274/api/hasLiked/${questionId}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
                 }
@@ -67,13 +67,13 @@ const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, c
 
     try {
       if (!liked) {
-        await axios.post(`http://localhost:5274/api/Like/like/${questionId}`, {}, {
+        await axios.post(`http://localhost:5274/api/like/${questionId}`, {}, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
         });
       } else {
-        await axios.delete(`http://localhost:5274/api/Like/unlike/${questionId}`, {
+        await axios.delete(`http://localhost:5274/api/unlike/${questionId}`, {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }

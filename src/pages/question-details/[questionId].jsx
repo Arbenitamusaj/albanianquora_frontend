@@ -35,7 +35,7 @@ export default function QuestionDetails() {
             setLoading(true);
             const fetchQuestionDetails = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:5274/api/Question/${questionId}`);
+                    const response = await axios.get(`http://localhost:5274/api/question-details/${questionId}`);
                     setQuestionDetails(response.data);
                     console.log(questionDetails);
                 } catch (error) {
@@ -45,7 +45,7 @@ export default function QuestionDetails() {
 
             const fetchComments = async () => {
             try {
-                const response = await axios.get(`http://localhost:5274/Comment/byQuestion/${questionId}`);
+                const response = await axios.get(`http://localhost:5274/api/comments/${questionId}`);
                 console.log("Comments fetched:", response.data);
                 setComments(response.data);
             } catch (error) {
@@ -54,7 +54,7 @@ export default function QuestionDetails() {
             };
             const incrementViews = async () => {
                 try {
-                    await axios.post(`http://localhost:5274/api/Question/incrementView/${questionId}`);
+                    await axios.post(`http://localhost:5274/api/incrementView/${questionId}`);
                 } catch (error) {
                     console.error('Error incrementing views:', error);
                 }
@@ -77,7 +77,7 @@ const handlePostComment = async () => {
 
     try {
         const authToken = localStorage.getItem('auth-token');
-        const response = await axios.post(`http://localhost:5274/Comment/comments/${questionId}`, {
+        const response = await axios.post(`http://localhost:5274/api/comment/${questionId}`, {
             content: comment,
         }, {
             headers: {
@@ -107,7 +107,7 @@ const handlePostComment = async () => {
     const handleDeleteComment = async (commentId) => {
     try {
         const authToken = localStorage.getItem('auth-token');
-        const response = await axios.delete(`http://localhost:5274/Comment/comments/${commentId}`, {
+        const response = await axios.delete(`http://localhost:5274/api/comment/${commentId}`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`
             }
@@ -130,7 +130,7 @@ const handleEditComment = async (commentId, newContent) => {
     console.log("Editing comment ID:", commentId);
     try {
         const authToken = localStorage.getItem('auth-token');
-        const response = await axios.put(`http://localhost:5274/Comment/comments/${commentId}`, {
+        const response = await axios.put(`http://localhost:5274/api/comment/${commentId}`, {
             content: newContent
         }, {
             headers: {
@@ -178,7 +178,7 @@ const handleEditComment = async (commentId, newContent) => {
                     category={questionDetails.category}
                     timeAgo={questionDetails.timeAgo}
                     title={questionDetails.title}
-                    text={questionDetails.content}
+                    description={questionDetails.content}
                     commentsCount={comments.length} 
                     likesCount={comments.length}
                 />
