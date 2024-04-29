@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quora-frontend-deployment # Replace with your app name
+spec:
+  replicas: 2 # Number of pods to run
+  selector:
+    matchLabels:
+      app: albanian-quora-frontend
+  template:
+    metadata:
+      labels:
+        app: albanian-quora-frontend
+    spec:
+      containers:
+        - name: albanian-quora-frontend
+          image: albquorarregistry.azurecr.io/frontend:latest # Replace with your container image details
+          ports:
+            - containerPort: 3000 # Port where your Next.js app runs
+              protocol: TCP
+          resources:
+            limits:
+              cpu: "1" # Limit CPU usage to 1 core
+              memory: "2Gi" # Limit memory usage to 2 Gigabytes

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: question-frontend-service
+  labels:
+    app: albanian-quora-frontend # Corrected typo
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: albanian-quora-frontend # Corrected typo
