@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
+import { showToast } from "../../components/Notify";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -15,19 +16,24 @@ export default function Login() {
     event.preventDefault();
 
     try {
-      const response = await axios.post("DB_HOST:5274/auth/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:5274/api/user/login",
+        {
+          email,
+          password,
+        }
+      );
 
       console.log("Login Successful:", response.data);
       login(response.data.token);
       router.push("/home");
+      showToast("User loged in successfully!", "success");
     } catch (error) {
       console.error(
         "Login failed:",
         error.response ? error.response.data : error.message
       );
+      showToast("Your credentials are incorrect!", "error");
     }
   };
 

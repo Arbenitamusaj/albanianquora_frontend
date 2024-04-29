@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import NavBar from '../components/NavBar';
 import QuestionCard from '../components/QuestionCard';
-import QuestionForm from '../components/QuestionForm';
 import CategoryButton from '../components/CategoryButton';
 import FilterButton from '../components/FilterButton';
+import { FaRegComments } from "react-icons/fa";
 import { VscListOrdered } from "react-icons/vsc";
+import { BiLike } from "react-icons/bi";
+import { IoEye } from "react-icons/io5";
 import Link from 'next/link';
+import SearchBar from '../components/SearchBar';
 
 export default function Home() {
-    const [showQuestion, setShowQuestion] = useState(false);
     const [categories, setCategories] = useState([]);
     const [questions, setQuestions] = useState([]); 
 
@@ -17,7 +18,6 @@ export default function Home() {
         fetchCategories();
         fetchQuestions();
     }, []);
-
     const fetchCategories = async () => {
         try {
             const response = await axios.get('http://localhost:5274/api/QuestionCategory');
@@ -32,28 +32,17 @@ export default function Home() {
 
     const fetchQuestions = async () => {
         try {
-            const response = await axios.get('http://localhost:5274/api/Question');
+            const response = await axios.get('http://localhost:5274/api/questions');
             setQuestions(response.data);
+            console.log(response.data)
+
         } catch (error) {
             console.error('Error fetching questions:', error);
         }
     };
-
-    const handleSearch = async (searchTerm) => {
-        if (!searchTerm) {
-            fetchQuestions();  // Reload all questions if search is cleared or invalid
-            return;
-        }
-        try {
-            const response = await axios.get(`http://localhost:5274/api/question/search?search=${searchTerm}`);
-            setQuestions(response.data);
-        } catch (error) {
-            console.error('Error performing search:', error);
-        }
-    };
     const fetchLatestQuestions = async () => {
         try {
-            const response = await axios.get('http://localhost:5274/api/Question/latest');
+            const response = await axios.get('http://localhost:5274/api/question/latest');
             setQuestions(response.data);
         } catch (error) {
             console.error('Error fetching latest questions:', error);
@@ -61,7 +50,7 @@ export default function Home() {
     };
     const fetchMostLikedQuestions = async () => {
         try {
-            const response = await axios.get('http://localhost:5274/api/Like/mostLiked');
+            const response = await axios.get('http://localhost:5274/api/mostLiked');
             setQuestions(response.data);
         } catch (error) {
             console.error('Error fetching most liked questions:', error);
@@ -69,7 +58,7 @@ export default function Home() {
     };
     const fetchMostCommentedQuestions = async () => {
         try {
-            const response = await axios.get('http://localhost:5274/api/Question/mostCommented');
+            const response = await axios.get('http://localhost:5274/api/question/mostCommented');
             setQuestions(response.data);
         } catch (error) {
             console.error('Error fetching most liked questions:', error);
@@ -77,7 +66,7 @@ export default function Home() {
     };
     const fetchMostViewedQuestions = async () => {
         try {
-            const response = await axios.get('http://localhost:5274/api/Question/mostViewed');
+            const response = await axios.get('http://localhost:5274/api/question/mostViewed');
             setQuestions(response.data);
         } catch (error) {
             console.error('Error fetching most liked questions:', error);
@@ -85,10 +74,26 @@ export default function Home() {
     };
 
 
+    const handleCategorySelect = async (categoryId) => {
+        try {
+            const response = await axios.get(`http://localhost:5274/api/question/${categoryId}`);
+            setQuestions(response.data);
+        } catch (error) {
+            console.error('Error fetching questions by category:', error);
+        }
+    };
+    const handleSearch = async (searchTerm) => {
+        try {
+            const response = await axios.get(`http://localhost:5274/api/question/title/search?search=${searchTerm}`);
+            setQuestions(response.data);
+        } catch (error) {
+            console.error('Error performing search:', error);
+        }
+    };
+
     return (
         <>
             <div className='bg-gray-100 h-full min-h-screen relative'>
-                <NavBar toggleQuestionForm={() => setShowQuestion(!showQuestion)} onSearch={handleSearch} />
                 <div className="pt-10 px-3 md:px-10 lg:px-20">
                     <div className="w-full flex flex-row justify-center p-1">
                         <div className='w-1/5 hidden md:block'>
@@ -97,24 +102,31 @@ export default function Home() {
                                 Category Table
                             </Link>
                                <FilterButton filtername="Top Latest" onClick={fetchLatestQuestions} icon={VscListOrdered} />
-                                <FilterButton filtername="Most Liked" onClick={fetchMostLikedQuestions} icon={VscListOrdered} />
-                                <FilterButton filtername="Most Commented" onClick={fetchMostCommentedQuestions} icon={VscListOrdered} />
-                                <FilterButton filtername="Most Viewed" onClick={fetchMostViewedQuestions} icon={VscListOrdered} />
+                                <FilterButton filtername="Most Liked" onClick={fetchMostLikedQuestions} icon={BiLike} />
+                                <FilterButton filtername="Most Commented" onClick={fetchMostCommentedQuestions} icon={FaRegComments} />
+                                <FilterButton filtername="Most Viewed" onClick={fetchMostViewedQuestions} icon={IoEye} />
 
 
                             </div>
                         </div>
                         <div className='w-3/5 flex justify-center flex-col'>
-                            {questions.map(question => (
+                            <div className='mb-10'>
+                                <SearchBar placeholder="Search..."  onSearch={handleSearch} />
+                            </div>
+                    
 
-                                <QuestionCard
-                                    questionId={question.questionId}
-                                    name={question.userName}
-                                    category={question.category}
-                                    timeAgo={question.timeAgo}
-                                    title={question.title}
-                                    content={question.content}
-                                />
+                            {questions.map(question => (
+                                // <Link href={`/question-details/${question.questionId}`}>
+                                    <QuestionCard
+                                        questionId={question.questionId}
+                                        name={question.userName}
+                                        category={question.category}
+                                        timeAgo={question.timeAgo}
+                                        title={question.title}
+                                        description={question.content}
+                                        views = {question.views}
+                                    />
+                                // </Link>
                          
                             ))}
                         </div>
@@ -130,14 +142,6 @@ export default function Home() {
                             </div>
                         </div>
                     </div>
-                    {showQuestion && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                            <QuestionForm 
-                                toggleForm={() => setShowQuestion(false)} 
-                                style={{ width: '80vw', height: '80vh', maxWidth: '600px' }} 
-                            />
-                        </div>
-                    )}
                 </div>
             </div>
         </>
