@@ -32,7 +32,7 @@ export default function Home() {
 
     const fetchQuestions = async () => {
         try {
-            const response = await axios.get('http://localhost:5274/api/Question');
+            const response = await axios.get('http://localhost:5274/api/questions');
             setQuestions(response.data);
 
         } catch (error) {
@@ -41,7 +41,7 @@ export default function Home() {
     };
     const fetchLatestQuestions = async () => {
         try {
-            const response = await axios.get('http://localhost:5274/api/Question/latest');
+            const response = await axios.get('http://localhost:5274/api/question/latest');
             setQuestions(response.data);
         } catch (error) {
             console.error('Error fetching latest questions:', error);
@@ -49,7 +49,7 @@ export default function Home() {
     };
     const fetchMostLikedQuestions = async () => {
         try {
-            const response = await axios.get('http://localhost:5274/api/Like/mostLiked');
+            const response = await axios.get('http://localhost:5274/api/mostLiked');
             setQuestions(response.data);
         } catch (error) {
             console.error('Error fetching most liked questions:', error);
@@ -57,7 +57,7 @@ export default function Home() {
     };
     const fetchMostCommentedQuestions = async () => {
         try {
-            const response = await axios.get('http://localhost:5274/api/Question/mostCommented');
+            const response = await axios.get('http://localhost:5274/api/question/mostCommented');
             setQuestions(response.data);
         } catch (error) {
             console.error('Error fetching most liked questions:', error);
@@ -65,7 +65,7 @@ export default function Home() {
     };
     const fetchMostViewedQuestions = async () => {
         try {
-            const response = await axios.get('http://localhost:5274/api/Question/mostViewed');
+            const response = await axios.get('http://localhost:5274/api/question/mostViewed');
             setQuestions(response.data);
         } catch (error) {
             console.error('Error fetching most liked questions:', error);
@@ -75,7 +75,7 @@ export default function Home() {
 
     const handleCategorySelect = async (categoryId) => {
         try {
-            const response = await axios.get(`http://localhost:5274/api/Question/ByCategory/${categoryId}`);
+            const response = await axios.get(`http://localhost:5274/api/question/${categoryId}`);
             setQuestions(response.data);
         } catch (error) {
             console.error('Error fetching questions by category:', error);
@@ -83,7 +83,7 @@ export default function Home() {
     };
     const handleSearch = async (searchTerm) => {
         try {
-            const response = await axios.get(`http://localhost:5274/api/question/search?search=${searchTerm}`);
+            const response = await axios.get(`http://localhost:5274/api/question/title/search?search=${searchTerm}`);
             setQuestions(response.data);
         } catch (error) {
             console.error('Error performing search:', error);
@@ -122,7 +122,7 @@ export default function Home() {
                                         category={question.category}
                                         timeAgo={question.timeAgo}
                                         title={question.title}
-                                        content={question.content}
+                                        description={question.content}
                                     />
                                 // </Link>
                          
