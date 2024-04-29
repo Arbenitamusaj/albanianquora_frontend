@@ -10,7 +10,7 @@ import AskButton from '../components/AskButton';
 import { useAuth } from '../../context/AuthContext';
 
 
-export default function NavBar({ toggleQuestionForm, onSearch }) {
+export default function NavBar({ toggleQuestionForm }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
@@ -41,7 +41,6 @@ export default function NavBar({ toggleQuestionForm, onSearch }) {
                 </div>
                 <div className='hidden lg:flex justify-between items-center w-full'>
                     <div className='text-lg font-bold text-[#0d9488]'>AlbanianQuora</div>
-                    <SearchBar placeholder="Search..."  onSearch={onSearch} />
                     <div className='flex items-center'>
                         <Link href="/home" className="flex items-center mx-4 hover:text-[#0d9488] hover:border-b hover:border-[#0d9488]">
                             <AiOutlineHome className="mr-2" />Home

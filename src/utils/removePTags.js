@@ -1,3 +1,3 @@
-export const  removePTags = (htmlString) => {
-  return htmlString.replace(/<\/?p>/g, '');
+export const removePTags = (htmlString) => {
+  return (htmlString || '').replace(/<\/?p>/g, '');
 };
