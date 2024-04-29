@@ -99,7 +99,7 @@ const handlePostComment = async () => {
 
     } catch (error) {
         console.error('Error posting comment:', error);
-        showToast('Failed to post comment. Please try again.', 'error');
+        showToast('You must be logged in to post a comment', 'error');
     }
 };
 
@@ -179,6 +179,7 @@ const handleEditComment = async (commentId, newContent) => {
                     timeAgo={questionDetails.timeAgo}
                     title={questionDetails.title}
                     description={questionDetails.content}
+                    views = {questionDetails.views}
                     commentsCount={comments.length} 
                     likesCount={comments.length}
                 />

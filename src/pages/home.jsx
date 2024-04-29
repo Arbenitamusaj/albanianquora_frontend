@@ -34,6 +34,7 @@ export default function Home() {
         try {
             const response = await axios.get('http://localhost:5274/api/questions');
             setQuestions(response.data);
+            console.log(response.data)
 
         } catch (error) {
             console.error('Error fetching questions:', error);
@@ -123,6 +124,7 @@ export default function Home() {
                                         timeAgo={question.timeAgo}
                                         title={question.title}
                                         description={question.content}
+                                        views = {question.views}
                                     />
                                 // </Link>
                          

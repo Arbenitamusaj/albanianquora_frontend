@@ -26,3 +26,14 @@ body {
     )
     rgb(var(--background-start-rgb));
 } */
+.description-container>* {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.description-container {
+  text-overflow: ellipsis;
+  overflow-y: auto;
+  max-height: 128px;
+}
