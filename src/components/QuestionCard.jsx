@@ -5,9 +5,11 @@ import { BiLike } from "react-icons/bi";
 import { removePTags } from '../utils/removePTags';
 import { timeAgo as getTimeAgo } from '../utils/timeAgo';
 import { useRouter } from 'next/router';
+import { IoEye } from "react-icons/io5";
+import { showToast } from './Notify';
 
 
-const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, description, likesCount }) => {
+const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, description, likesCount, views }) => {
   const strippedContent = removePTags(description);
   const relativeTime = getTimeAgo(timeAgo);
   const [likes, setLikes] = useState(likesCount); 
@@ -83,6 +85,7 @@ const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, d
       setLiked(!liked); 
     } catch (error) {
       console.error('Error updating like:', error);
+      showToast("You must be logged in to like the question!","error")
     }
   };
   
@@ -101,7 +104,7 @@ const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, d
           </div>
           <div className="mt-4 mb-6">
             <div className="mb-3 text-xl font-bold">{title}</div>
-            <div className="text-sm text-neutral-600" dangerouslySetInnerHTML={{ __html: strippedContent }}></div>
+            <div className="text-sm text-neutral-600 description-container" dangerouslySetInnerHTML={{ __html: strippedContent }}></div>
           </div>
           <div className="flex items-center justify-between text-slate-500">
             <div className="flex space-x-4 md:space-x-8">
@@ -127,6 +130,11 @@ const QuestionCard = ({ questionId, avatarUrl, name, category, timeAgo, title, d
                 <BiLike onClick={handleLike} className={`cursor-pointer ${liked ? 'text-red-500' : 'text-gray-500'}`} style={{ fontSize: '1.5rem' }} />
                 <span>{likes} {liked ? "Unlike" : "Like"}</span>
               </div>
+              <div className="flex cursor-pointer items-center transition hover:text-slate-600">
+                <IoEye/>
+                <span>{views}</span>
+              </div>
+
             </div>
           </div>
         </div>
