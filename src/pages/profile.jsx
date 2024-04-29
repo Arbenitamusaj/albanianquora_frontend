@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import NavBar from '../components/NavBar';
-import QuestionCard from '../components/QuestionCard';
-import QuestionForm from '../components/QuestionForm';
-import CategoryButton from '../components/CategoryButton';
-import { Select, MenuItem, FormControl, InputLabel, TextField, Button } from '@mui/material';
+import { TextField, Button } from '@mui/material';
 
 export default function Profile() {
     const [ firstName, setFirstName] = useState('');
@@ -68,7 +64,7 @@ const handleSubmit = async (event) => {
     return (
         <>
             <div className='bg-gray-100 h-screen relative'>
-                <NavBar toggleQuestionForm={() => setShowQuestion(!showQuestion)} />
+                {/* <NavBar/> */}
                 <div className="pt-10 px-3 md:px-10 lg:px-20">
                     <div className="w-full flex flex-row justify-center p-1">
                         <div className='w-3/5 min-w-40 flex justify-center flex-col gap-5'>
@@ -117,14 +113,6 @@ const handleSubmit = async (event) => {
                             </div>
                         </div>
                     </div>
-                    {showQuestion && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                            <QuestionForm 
-                                toggleForm={() => setShowQuestion(false)} 
-                                style={{ width: '80vw', height: '80vh', maxWidth: '600px' }} 
-                            />
-                        </div>
-                    )}
                 </div>
             </div>
         </>

@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }) {
 
   return (
     <AuthProvider>
-      <NavBar toggleQuestionForm={() => setShowQuestion(!showQuestion)} />
+      <NavBar toggleQuestionForm={() => setShowQuestion(!showQuestion)}/>
       <Component {...pageProps} />
 
       <ToastContainer

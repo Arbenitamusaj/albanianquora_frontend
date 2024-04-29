@@ -14,22 +14,24 @@ export default function NavBar({ toggleQuestionForm }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const authToken = typeof window !== 'undefined' ? localStorage.getItem('auth-token') : null;
     const { logout } = useAuth();
-    // const authToken = null;
+    const [authToken, setAuthToken] = useState(null);
 
     function toggleDropdown() {
         var dropdownContent = document.getElementById("dropdown-content");
         dropdownContent.classList.toggle("hidden");
     }
 
-    useEffect(() => {   
+    useEffect(() => {
+        setAuthToken(localStorage.getItem('auth-token'));
+
         const handleScroll = () => {
             setScrolled(window.scrollY > 20);
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
 
     return (
         <>
@@ -51,9 +53,7 @@ export default function NavBar({ toggleQuestionForm }) {
                             <>
                                 <div className="flex justify-between h-16">
                                     <div className="p-5 rounded-lg flex">
-                                    <div>
                                         <div className="relative inline-block text-left z-50">
-                                        <div>
                                             <button
                                             type="button"
                                             className="flex items-center text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition"
@@ -74,7 +74,6 @@ export default function NavBar({ toggleQuestionForm }) {
                                                 />
                                             </svg>
                                             </button>
-                                        </div>
                                         <div
                                             id='dropdown-content'
                                             className="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
@@ -107,7 +106,6 @@ export default function NavBar({ toggleQuestionForm }) {
                                             </div>
                                         </div>
                                         </div>
-                                    </div>
                                     </div>
                                     </div>
                             </>
