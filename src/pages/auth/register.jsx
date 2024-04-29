@@ -18,7 +18,7 @@ export default function Register() {
     };
 
     try {
-      const response = await axios.post('http://localhost:5274/auth/register', user);
+      const response = await axios.post('http://localhost:5274/api/user/register', user);
       console.log(response.data); 
       router.push('/auth/login');
       showToast('User registered successfully!', 'success');
